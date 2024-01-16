@@ -1,6 +1,9 @@
 namespace exercise.test;
 
+using System.Security.Cryptography;
 using exercise.main;
+using NUnit.Framework.Internal;
+
 public class Tests
 {
 
@@ -13,12 +16,50 @@ public class Tests
         _basket = new Basket(10);
     }
 
-        [TestCase ("Sweet Bagel", true)]
-        [TestCase ("Super Bagel", true)]
-        [TestCase ("", false)]
-        [TestCase ("Small Bagel", true)]
-        public void TestAddBagel(string Type, bool expected) {
+        [TestCase ("BGLO", true)]
+        [TestCase ("COFB", true)]
+        [TestCase ("BGLS", false)]
+        [TestCase ("COFL", true)]
+        public void TestAddBagel(string Sku, bool expected) {
 
-            Assert.That(_bagel.AddBagel(Type), Is.EqualTo(expected));
+            Assert.That(_basket.AddItem(Sku), Is.Not.Null);
+        }
+
+        [TestCase ("BGLO", "FILE", true)]
+        [TestCase ("BGLS", "FILX", false)]
+        public void TestAddBagelAndFilling(string Sku,string fillingSku, bool expected) {
+
+            Assert.That(_basket.AddItem(Sku, fillingSku), Is.Not.Null);
+        }
+
+        public void TestChangeCapacity() {
+            Assert.That(_basket.ChangeCapacity(15), Is.EqualTo(15));
+        }
+
+        public void TestChangeCapacityWhenManyItemsAreAdded() {
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILX");
+            Assert.That(_basket.ChangeCapacity(6), Is.EqualTo(10));
+        }
+
+        [Test]
+        public void TestRemoveBagel() {
+            List<Item> item = _basket.AddItem("BGLO", "FILX");
+            Assert.That(_basket.RemoveBagel(item[0]), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestGetCost() {
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLS");
+            _basket.AddItem("COFL");
+            _basket.AddItem("COFW");
+            Assert.That(_basket.TotalCost, Is.EqualTo(3.58));
         }
 }
