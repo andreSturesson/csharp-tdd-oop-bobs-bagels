@@ -1,0 +1,17 @@
+### Domain Model
+
+| Classes | Members                                    | Methods                                                   | Returns                                                                                                          |   |
+|---------|--------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|---|
+| Item    | private string SKU :: Getter               |                                                           |                                                                                                                  |   |
+|         | private int Price :: Getter                |                                                           |                                                                                                                  |   |
+|         | private string Name :: Getter              |                                                           |                                                                                                                  |   |
+|         | private string Variant :: Getter           |                                                           |                                                                                                                  |   |
+| Stock   | Dictionary<string, Item> Bagels :: Getter  | public GetSkuByName(string Name, string Variant) : string | returns the SKU of the Item.                                                                                     |   |
+|         | Dictionary<string, Item> Coffee :: Getter  | public GetFillingPrice(string Name)                       | returns the price of the Filling                                                                                 |   |
+|         | Dictionary<string, Item> Filling :: Getter | public Stock() : Fills all lists with Bob´s Inventory     |                                                                                                                  |   |
+|         |                                            |                                                           |                                                                                                                  |   |
+| Basket  | private List<Inventory> Order              | public AddItem(string sku) : bool                         | Adds an item by SKU, returns true of false if they exist in the Stock and adds the to the order, otherwise false |   |
+|         | private int Capacity                       | public RemoveBagel(string sku): bool                      | Removes the bagel by SKU, returns true if it exists in the Order, otherwise false.                               |   |
+|         | private int ItemsInOrder :: Getter         | public ChangeCapacity(int capacity) : bool                | Returns true if capacity can be changed                                                                          |   |
+|         | private int TotalCost :: Getter            |                                                           |                                                                                                                  |   |
+|         |                                            |                                                           |                                                                                                                  |   |
