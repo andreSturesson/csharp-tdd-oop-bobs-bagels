@@ -50,6 +50,8 @@ public class Tests
 
         [Test]
         public void TestRemoveBagel() {
+            _basket.AddItem("BGLO", "FILX");
+            _basket.AddItem("BGLO", "FILS");
             List<Item> item = _basket.AddItem("BGLO", "FILX");
             Assert.That(_basket.RemoveBagel(item[0]), Is.EqualTo(true));
         }
@@ -60,6 +62,17 @@ public class Tests
             _basket.AddItem("BGLS");
             _basket.AddItem("COFL");
             _basket.AddItem("COFW");
-            Assert.That(_basket.TotalCost, Is.EqualTo(3.58));
+            Assert.That(_basket.GetTotalCost(), Is.EqualTo(3.58));
+        }
+
+        [Test]
+        public void TestGetDiscounted() {
+            _basket.AddItem("BGLO");
+            _basket.AddItem("BGLO");
+            _basket.AddItem("BGLO");
+            _basket.AddItem("BGLO");
+            _basket.AddItem("BGLO");
+            _basket.AddItem("BGLO");
+            Assert.That(_basket.GetTotalCost(), Is.EqualTo(2.49).Within(.0005));
         }
 }

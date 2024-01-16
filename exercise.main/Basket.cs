@@ -15,10 +15,10 @@ namespace exercise.main {
             _totalCost = 0;
         }
 
-        public double TotalCost { get { return _totalCost; }}
         public double TotalItemsInBasket { get { return _itemsInOrder; }}
+        public List<List<Item>> Items { get { return _items; }}
 
-        public Item AddItem(string sku) {
+        public Item AddItem(string sku, int quantity = 1) {
             if (_itemsInOrder == _capacity)
                 return null;
             Item temp = Stock.GetItem(sku);
@@ -30,7 +30,53 @@ namespace exercise.main {
             return temp;
         }
 
-        public List<Item> AddItem(string sku, string fillingSku) {
+
+        private bool CheckDiscounted() {
+            int NumberOfBagels = 0;
+            double bagelPrice = 0;
+            int NumberOfCoffee = 0;
+            double newPrice = 0;
+            foreach (List<Item> list in _items)
+            {
+                foreach (Item item in list)
+                {
+                    switch(item.Name) {
+                        case "Bagel": {
+                            NumberOfBagels += 1;
+                            bagelPrice += item.Price;
+                            newPrice += item.Price;
+                            break;
+                        }
+                        case "Coffee": {
+                            if(item.Variant == "Black") {
+                                NumberOfCoffee +=1;
+                                newPrice += item.Price;
+                            }
+                            break;
+                        }
+                    }
+                    newPrice += item.Price;
+                }
+            }
+            if (NumberOfBagels % 12 == 0) {
+                double deal = NumberOfBagels / 12;
+                bagelPrice =  bagelPrice - 3.99*deal;
+                _totalCost -= 3.99*deal;
+            }
+            if (NumberOfBagels % 6 == 0) {
+                double deal = NumberOfBagels / 6;
+                bagelPrice =  bagelPrice - 2.49*deal;
+                _totalCost -= bagelPrice;
+            }
+            if (NumberOfCoffee > 1 && NumberOfBagels > 1) {
+                if(NumberOfBagels > NumberOfCoffee) {
+                    _totalCost -= 0.99 - 1.25*NumberOfCoffee;
+                }
+            }
+            return false;
+        }
+
+        public List<Item> AddItem(string sku, string fillingSku, int quantity = 1) {
             if (_itemsInOrder == _capacity)
                 return null;
             Item temp = Stock.GetItem(sku);
@@ -70,6 +116,11 @@ namespace exercise.main {
                 return _capacity;
             }
             return _capacity;
+        }
+
+        public double GetTotalCost() {
+            CheckDiscounted();
+            return _totalCost;
         }
     }
 }

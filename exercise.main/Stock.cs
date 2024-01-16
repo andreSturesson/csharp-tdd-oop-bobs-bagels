@@ -5,11 +5,15 @@ public static class Stock {
     public static Dictionary<string, Item> Bagels { get; private set; }
     public static Dictionary<string, Item> Coffee { get; private set; }
     public static Dictionary<string, Item> Filling { get; private set; }
+    public static List<Discount> Discounts {get; private set;}
+
+
 
     static Stock() {
         Bagels = new Dictionary<string, Item>();
         Coffee = new Dictionary<string, Item>();
         Filling = new Dictionary<string, Item>();
+        Discounts = new List<Discount>();
 
         Bagels.Add("BGLO", new Item("BGLO", 0.49, "Bagel", "Onion", true));
         Bagels.Add("BGLP", new Item("BGLP", 0.39, "Bagel", "Plain", true));
@@ -27,6 +31,12 @@ public static class Stock {
         Filling.Add("FILX", new Item("FILX", 0.12, "Filling", "Cream Cheese"));
         Filling.Add("FILS", new Item("FILS", 0.12, "Filling", "Smoked Salmon"));
         Filling.Add("FILH", new Item("FILH", 0.12, "Filling", "Ham"));
+
+        Discounts.Add(new Discount(6, 2.49, "Bagel"));
+        Discounts.Add(new Discount(12, 3.99, "Bagel"));
+        Discounts.Add(new Discount(12, 3.99, "Bagel"));
+        Discounts.Add(new Discount(1, 1.25, "Coffee", "", "Coffee", "Bagel"));
+
     }
 
         public static Item GetItem(string sku) {
@@ -41,8 +51,8 @@ public static class Stock {
             return null;
         }
 
-        public static double GetFillingPrice(string name) {
-            return GetItem(GetSkuByName(name, "Filling")).Price;
+        public static double GetPrice(string Name, string Variant) {
+            return GetItem(GetSkuByName(Name, Variant)).Price;
         }
 
         public static string GetSkuByName(string Name, string Variant) {

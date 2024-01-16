@@ -5,6 +5,7 @@ namespace exercise.main {
         private double _price;
         private string _name;
         private string _variant;
+        private int _quantity;
         private bool _couldFilling;
 
         public Item(string sku, double price, string name, string variant, bool couldFilling = false) {
