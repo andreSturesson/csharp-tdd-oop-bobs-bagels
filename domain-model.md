@@ -19,3 +19,30 @@
 
 ### Notes to self
 I commited to a flawed design early on, Was determined to continue using it and not refactor. Should be more open to refactoring in the future.
+
+### Refactored Domain Model
+
+| Classes            | Members                                               | Methods                                                                       | Returns                                              |   |
+|--------------------|-------------------------------------------------------|-------------------------------------------------------------------------------|------------------------------------------------------|---|
+| Class BaseItem     | guid uuid :: Getter                                   |                                                                               |                                                      |   |
+|                    | string _SKU ::Getter                                  |                                                                               |                                                      |   |
+|                    | int _price ::Getter                                   |                                                                               |                                                      |   |
+|                    | string _name ::Getter                                 |                                                                               |                                                      |   |
+|                    | string _variant ::Getter                              |                                                                               |                                                      |   |
+| Bagel : BaseItem   | private List<Filling> fillings ::Getter               | public AddFilling(Filling filling) : bool                                     | Returns True if added to the Bagel, otherwise False. |   |
+| Coffee : BaseItem  |                                                       |                                                                               |                                                      |   |
+| Filling : BaseItem |                                                       |                                                                               |                                                      |   |
+| Discounts          | private int _quantity ::Getter                        |                                                                               |                                                      |   |
+|                    | private int price ::Getter                            |                                                                               |                                                      |   |
+| Stock              | public static Dictionary<string, Bagel> Bagels        |                                                                               |                                                      |   |
+|                    | public static Dictionary<String, Coffee> Coffee       |                                                                               |                                                      |   |
+|                    | public static Dictionary<string, Filling> Fillings    |                                                                               |                                                      |   |
+|                    | public static Dictionary<string, Discounts> Discounts |                                                                               |                                                      |   |
+| Basket             | private List<BaseItem> _basket                        | public Basket(int Capacity) - Overloaded to support an initial List<BaseItem> |                                                      |   |
+|                    | private int _capacity                                 |                                                                               |                                                      |   |
+|                    | private int _itemsInBasket                            |                                                                               |                                                      |   |
+| Receipt            | private Basket _basket                                | public Receipt(Basket basket)                                                 |                                                      |   |
+|                    |                                                       |                                                                               |                                                      |   |
+
+
+

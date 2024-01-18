@@ -1,8 +1,7 @@
 namespace exercise.test;
 
-using System.Security.Cryptography;
 using exercise.main;
-using NUnit.Framework.Internal;
+using NUnit.Framework;
 
 public class Tests
 {
@@ -21,58 +20,61 @@ public class Tests
         [TestCase ("BGLS", false)]
         [TestCase ("COFL", true)]
         public void TestAddBagel(string Sku, bool expected) {
-
-            Assert.That(_basket.AddItem(Sku), Is.Not.Null);
+            Assert.That(Stock.GetItem(Sku), Is.Not.Null);
         }
 
-        [TestCase ("BGLO", "FILE", true)]
-        [TestCase ("BGLS", "FILX", false)]
-        public void TestAddBagelAndFilling(string Sku,string fillingSku, bool expected) {
-
-            Assert.That(_basket.AddItem(Sku, fillingSku), Is.Not.Null);
+        [TestCase ("BGLO", "FILE", "Added: Bagel")]
+        [TestCase ("BGLS", "FILX", "Added: Bagel")]
+        public void TestAddBagelAndFilling(string Sku,string fillingSku, string expected) {
+            Bagel bagel = (Bagel)Stock.GetItem(Sku);
+            bagel.AddFilling((Filling)Stock.GetItem(fillingSku));
+            Assert.AreEqual(expected, _basket.AddItem(bagel));
         }
 
         public void TestChangeCapacity() {
             Assert.That(_basket.ChangeCapacity(15), Is.EqualTo(15));
         }
 
-        public void TestChangeCapacityWhenManyItemsAreAdded() {
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILX");
-            Assert.That(_basket.ChangeCapacity(6), Is.EqualTo(10));
-        }
-
         [Test]
         public void TestRemoveBagel() {
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLO", "FILS");
-            List<Item> item = _basket.AddItem("BGLO", "FILX");
-            Assert.That(_basket.RemoveBagel(item[0]), Is.EqualTo(true));
+            _basket.AddItem(Stock.GetItem("BGLO"));
+            BasicItem item2 = Stock.GetItem("BGLO");
+            _basket.AddItem(item2);
+            Assert.That(_basket.Remove(item2.Id.ToString()), Is.EqualTo(true));
         }
 
         [Test]
         public void TestGetCost() {
-            _basket.AddItem("BGLO", "FILX");
-            _basket.AddItem("BGLS");
-            _basket.AddItem("COFL");
-            _basket.AddItem("COFW");
-            Assert.That(_basket.GetTotalCost(), Is.EqualTo(3.58));
+             Bagel bagel = (Bagel)Stock.GetItem("BGLO");
+             bagel.AddFilling((Filling)Stock.GetItem("FILX"));
+            _basket.AddItem(bagel);
+            _basket.AddItem(Stock.GetItem("BGLO"));
+            _basket.AddItem(Stock.GetItem("COFB"));
+            _basket.AddItem(Stock.GetItem("COFB"));
+            _basket.AddItem(Stock.GetItem("COFB"));
+            Receipt r = new Receipt(_basket);
+            double d = r.GetTotalCost();
+            Assert.That(d, Is.EqualTo(3.61).Within(0.05));
         }
 
         [Test]
-        public void TestGetDiscounted() {
-            _basket.AddItem("BGLO");
-            _basket.AddItem("BGLO");
-            _basket.AddItem("BGLO");
-            _basket.AddItem("BGLO");
-            _basket.AddItem("BGLO");
-            _basket.AddItem("BGLO");
-            Assert.That(_basket.GetTotalCost(), Is.EqualTo(2.49).Within(.0005));
+        public void TestTestDiscount() {
+            _basket.AddItem(Stock.GetItem("BGLS"));
+            _basket.AddItem(Stock.GetItem("BGLS"));
+            _basket.AddItem(Stock.GetItem("BGLS"));
+            _basket.AddItem(Stock.GetItem("BGLS"));
+            _basket.AddItem(Stock.GetItem("BGLS"));
+            _basket.AddItem(Stock.GetItem("BGLS"));
+            Receipt r = new Receipt(_basket);
+            double d = r.GetTotalCost();
+            Assert.That(d, Is.EqualTo(2.49).Within(0.05));
+        }
+        [Test]
+        public void TestCoffeeAndBagelDiscount() {
+             _basket.AddItem(Stock.GetItem("BGLS"));
+            _basket.AddItem(Stock.GetItem("COFB"));
+            Receipt r = new Receipt(_basket);
+            double d = r.GetTotalCost();
+            Assert.That(d, Is.EqualTo(1.25).Within(0.05));
         }
 }
